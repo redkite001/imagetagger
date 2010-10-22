@@ -9,8 +9,10 @@ class QDropArea : public QLabel
 
 public:
     explicit QDropArea(QWidget *parent = 0);
+    void loadImage(const QString &fileName, const char *format = 0, Qt::ImageConversionFlags flags = Qt::AutoColor);
 
 public slots:
+    void fitImage();
     void clear();
 
 signals:
@@ -20,9 +22,10 @@ protected:
      void dragMoveEvent(QDragMoveEvent *event);
      void dragLeaveEvent(QDragLeaveEvent *event);
      void dropEvent(QDropEvent *event);
+     void resizeEvent(QResizeEvent *event);
 
  private:
-     QLabel *label;
-}
+     QPixmap m_pixmap;
+};
 
 #endif // QDROPAREA_H
