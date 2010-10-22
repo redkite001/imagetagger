@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include "qdroparea.h"
+#include "qdragablelabel.h"
 #include <QtGui>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -16,6 +17,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->actionExit, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
     connect(ui->actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+
+
+    // Test
+    m_dropArea->loadImage("/home/redkite/Pictures/buse140.jpg");
+    /*
+    QDragableLabel *dl = new QDragableLabel(this);
+    dl->setScaledContents(true);
+    dl->setMaximumSize(60, 50);
+    dl->setPixmap(QPixmap(":/tags/tag1"));
+    ui->dockWidgetContents_3->layout()->addWidget(dl);
+    */
 }
 
 MainWindow::~MainWindow()

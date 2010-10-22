@@ -1,6 +1,7 @@
 #include "qdroparea.h"
 
 #include <QtGui>
+#include <QtDebug>
 
 QDropArea::QDropArea(QWidget *parent) :
     QLabel(parent)
@@ -25,7 +26,16 @@ void QDropArea::dragEnterEvent(QDragEnterEvent *event)
 
 void QDropArea::dragMoveEvent(QDragMoveEvent *event)
 {
-    event->acceptProposedAction();
+    if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
+        if (event->source() == this) {
+            event->setDropAction(Qt::MoveAction);
+            event->accept();
+        } else {
+            event->acceptProposedAction();
+        }
+    } else {
+        event->ignore();
+    }
 }
 
 void QDropArea::dropEvent(QDropEvent *event)
@@ -62,6 +72,47 @@ void QDropArea::dragLeaveEvent(QDragLeaveEvent *event)
     event->accept();
 }
 
+void QDropArea::mousePressEvent(QMouseEvent *event)
+{
+    QPixmap pixmap = QPixmap(":/tags/tag1");
+/*
+    QByteArray itemData;
+    QDataStream dataStream(&itemData, QIODevice::WriteOnly);
+    dataStream << pixmap << QPoint(event->pos());
+
+    QMimeData *mimeData = new QMimeData;
+    mimeData->setData("application/x-dnditemdata", itemData);
+
+    QDrag *drag = new QDrag(this);
+    drag->setMimeData(mimeData);
+    drag->setPixmap(pixmap);
+    drag->setHotSpot(event->pos());
+*/
+    //qDebug() << event->pos();
+    //qDebug() << this->pixmap()->rect();
+    //QPixmap tempPixmap = *this->pixmap();
+    QPoint realPoint = event->pos();
+    if (!convertPoinFromLabelToRealPixmap(realPoint))
+        return;
+    QPainter painter;
+    painter.begin(&m_pixmap);
+    painter.drawRect(realPoint.x() - 60, realPoint.y()- 60, 120, 120);
+    painter.drawText(realPoint.x() - 50, realPoint.y()- 50, 100, 100, Qt::AlignCenter, "1");
+    //painter.drawPixmap(event->x() - pixmap.width()/2, event->y()- pixmap.height()/2, pixmap);
+    painter.end();
+
+    setPixmap(m_pixmap);
+    fitImage();
+/*
+    if (drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction) == Qt::MoveAction)
+        close();
+    else {
+        show();
+        setPixmap(pixmap);
+    }
+*/
+}
+
 void QDropArea::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
@@ -84,6 +135,33 @@ void QDropArea::fitImage()
 void QDropArea::clear()
 {
     setBackgroundRole(QPalette::Dark);
+}
+
+bool QDropArea::convertPoinFromLabelToRealPixmap(QPoint &_labelPoint)
+{
+    QRect labelPixmapRect;
+    const QPixmap *labelPixmap = this->pixmap();
+
+    labelPixmapRect.setSize(labelPixmap->size());
+
+    labelPixmapRect.setX(width()/2 - labelPixmap->width()/2);
+    labelPixmapRect.setY(height()/2 - labelPixmap->height()/2);
+
+    if (_labelPoint.x() < labelPixmapRect.x() ||
+            _labelPoint.x() > labelPixmapRect.x() + labelPixmapRect.width() ||
+            _labelPoint.y() < labelPixmapRect.y() ||
+            _labelPoint.y() > labelPixmapRect.y() + labelPixmapRect.height() )
+    {
+        // The point wasn't on the pixmap
+        return false;
+    }
+
+    int ratio = m_pixmap.width() / labelPixmapRect.width();
+    _labelPoint.setX(_labelPoint.x() - labelPixmapRect.x());
+    _labelPoint.setY(_labelPoint.y() - labelPixmapRect.y());
+    _labelPoint = _labelPoint * ratio;
+    qDebug() << _labelPoint;
+    return true;
 }
 
 

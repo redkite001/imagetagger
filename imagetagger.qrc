@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/tags">
+        <file alias="tag1">buse140 mini.jpg</file>
+    </qresource>
+</RCC>

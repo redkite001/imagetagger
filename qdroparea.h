@@ -22,9 +22,12 @@ protected:
      void dragMoveEvent(QDragMoveEvent *event);
      void dragLeaveEvent(QDragLeaveEvent *event);
      void dropEvent(QDropEvent *event);
+     void mousePressEvent(QMouseEvent *event);
      void resizeEvent(QResizeEvent *event);
 
  private:
+     bool convertPoinFromLabelToRealPixmap(QPoint &_labelPoint);
+
      QPixmap m_pixmap;
 };
 

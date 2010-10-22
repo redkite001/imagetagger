@@ -49,9 +49,12 @@
   <widget class="QDockWidget" name="toolDW">
    <property name="minimumSize">
     <size>
-     <width>200</width>
-     <height>83</height>
+     <width>310</width>
+     <height>311</height>
     </size>
+   </property>
+   <property name="acceptDrops">
+    <bool>true</bool>
    </property>
    <property name="features">
     <set>QDockWidget::AllDockWidgetFeatures</set>
@@ -61,12 +64,6 @@
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_3">
     <layout class="QVBoxLayout" name="verticalLayout">
-     <property name="spacing">
-      <number>0</number>
-     </property>
-     <property name="margin">
-      <number>2</number>
-     </property>
      <item>
       <widget class="QLabel" name="imagePathL">
        <property name="text">
@@ -100,6 +97,41 @@
         </widget>
        </item>
       </layout>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>70</width>
+         <height>70</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="imagetagger.qrc">
+         <normaloff>:/tags/tag1</normaloff>:/tags/tag1</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>64</width>
+         <height>64</height>
+        </size>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
      <item>
       <spacer name="verticalSpacer">
@@ -146,6 +178,8 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="imagetagger.qrc"/>
+ </resources>
  <connections/>
 </ui>

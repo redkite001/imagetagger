@@ -12,9 +12,14 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    qdroparea.cpp
+    qdroparea.cpp \
+    qdragablelabel.cpp
 
 HEADERS  += mainwindow.h \
-    qdroparea.h
+    qdroparea.h \
+    qdragablelabel.h
 
 FORMS    += mainwindow.ui
+
+RESOURCES += \
+    imagetagger.qrc
