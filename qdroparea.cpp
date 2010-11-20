@@ -11,26 +11,18 @@ QDropArea::QDropArea(QWidget *parent)
     setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
     setAlignment(Qt::AlignCenter);
 
-
-    QDragableLabel *dl = new QDragableLabel("test", this);
-    dl->move(5, 5);
-     dl->show();
-     dl->setAttribute(Qt::WA_DeleteOnClose);
-
     setAcceptDrops(true);
 }
 
 void QDropArea::dragEnterEvent(QDragEnterEvent *event)
 {
-    if (event->mimeData()->hasFormat("application/x-fridgemagnet")) {
-           if (children().contains(event->source())) {
-               event->setDropAction(Qt::MoveAction);
-               event->accept();
-           } else {
-               event->acceptProposedAction();
-           }
-    } else if (event->mimeData()->hasText()) {
-        event->acceptProposedAction();
+    if (event->mimeData()->hasFormat("application/x-tag")) {
+       if (children().contains(event->source())) {
+           event->setDropAction(Qt::MoveAction);
+           event->accept();
+       } else {
+           event->acceptProposedAction();
+       }
     } else {
         event->ignore();
     }
@@ -38,59 +30,45 @@ void QDropArea::dragEnterEvent(QDragEnterEvent *event)
 
 void QDropArea::dragMoveEvent(QDragMoveEvent *event)
 {
-    if (event->mimeData()->hasFormat("application/x-fridgemagnet")) {
-            if (children().contains(event->source())) {
-                event->setDropAction(Qt::MoveAction);
-                event->accept();
-            } else {
-                event->acceptProposedAction();
-            }
-        } else if (event->mimeData()->hasText()) {
-            event->acceptProposedAction();
+    if (event->mimeData()->hasFormat("application/x-tag")) {
+        if (children().contains(event->source())) {
+            event->setDropAction(Qt::MoveAction);
+            event->accept();
         } else {
-            event->ignore();
+            event->acceptProposedAction();
         }
+    } else {
+        event->ignore();
+    }
 }
 
 void QDropArea::dropEvent(QDropEvent *event)
 {
-    if (event->mimeData()->hasFormat("application/x-fridgemagnet")) {
-             const QMimeData *mime = event->mimeData();
-             QByteArray itemData = mime->data("application/x-fridgemagnet");
-                     QDataStream dataStream(&itemData, QIODevice::ReadOnly);
+    if (event->mimeData()->hasFormat("application/x-tag")) {
+        const QMimeData *mime = event->mimeData();
+        QByteArray itemData = mime->data("application/x-tag");
+        QDataStream dataStream(&itemData, QIODevice::ReadOnly);
 
-                     QString text;
-                     QPoint offset;
-                     dataStream >> text >> offset;
-                     QDragableLabel *newLabel = new QDragableLabel(text, this);
-                             newLabel->move(event->pos() - offset);
-                             newLabel->show();
-                             newLabel->setAttribute(Qt::WA_DeleteOnClose);
+        int number, tmpShape;
+        QDragableLabel::Shape shape;
+        QPoint offset;
+        dataStream >> number >> tmpShape >> offset;
+        shape = (QDragableLabel::Shape)tmpShape;
 
-                             if (event->source() == this) {
-                                 event->setDropAction(Qt::MoveAction);
-                                 event->accept();
-                             } else {
-                                 event->acceptProposedAction();
-                             }
-    } else if (event->mimeData()->hasText()) {
-          QStringList pieces = event->mimeData()->text().split(QRegExp("\\s+"),
-                               QString::SkipEmptyParts);
-          QPoint position = event->pos();
+        QDragableLabel *newLabel = new QDragableLabel(number, shape, this);
+        newLabel->move(event->pos() - offset);
+        newLabel->show();
+        newLabel->setAttribute(Qt::WA_DeleteOnClose);
 
-          foreach (QString piece, pieces) {
-              QDragableLabel *newLabel = new QDragableLabel(piece, this);
-              newLabel->move(position);
-              newLabel->show();
-              newLabel->setAttribute(Qt::WA_DeleteOnClose);
-
-              position += QPoint(newLabel->width(), 0);
-          }
-
-          event->acceptProposedAction();
-      } else {
-          event->ignore();
-      }
+        if (event->source() == this) {
+            event->setDropAction(Qt::MoveAction);
+            event->accept();
+        } else {
+            event->acceptProposedAction();
+        }
+    } else {
+        event->ignore();
+    }
 }
 
 void QDropArea::dragLeaveEvent(QDragLeaveEvent *event)
@@ -101,30 +79,31 @@ void QDropArea::dragLeaveEvent(QDragLeaveEvent *event)
 
 void QDropArea::mousePressEvent(QMouseEvent *event)
 {
-       QDragableLabel *child = static_cast<QDragableLabel*>(childAt(event->pos()));
-       if (!child)
-       {
-           child = new QDragableLabel(1,1, this);
-           child->move(event->pos() - child->rect().center());
-       }
+    QDragableLabel *child = static_cast<QDragableLabel*>(childAt(event->pos()));
+    if (!child) {
+        child = new QDragableLabel(1,QDragableLabel::Cercle, this);
+        child->move(event->pos() - child->rect().center());
+        child->setAttribute(Qt::WA_DeleteOnClose);
+    }
 
-       QPoint hotSpot = event->pos() - child->pos();
+    QPoint hotSpot = event->pos() - child->pos();
 
-       QByteArray itemData;
-       QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-       dataStream << child->labelText() << QPoint(hotSpot);
-       QMimeData *mimeData = new QMimeData;
-         mimeData->setData("application/x-fridgemagnet", itemData);
-         mimeData->setText(child->labelText());
-         QDrag *drag = new QDrag(this);
-          drag->setMimeData(mimeData);
-          drag->setPixmap(*child->pixmap());
-          drag->setHotSpot(hotSpot);
+    QByteArray itemData;
+    QDataStream dataStream(&itemData, QIODevice::WriteOnly);
+    dataStream << child->getNumber() << (qint32)child->getShape() << QPoint(hotSpot);
+    QMimeData *mimeData = new QMimeData;
+    mimeData->setData("application/x-tag", itemData);
+    QDrag *drag = new QDrag(this);
+    drag->setMimeData(mimeData);
+    drag->setPixmap(*child->pixmap());
+    drag->setHotSpot(hotSpot);
 
-          child->hide();if (drag->exec(Qt::MoveAction | Qt::CopyAction, Qt::CopyAction) == Qt::MoveAction)
-              child->close();
-          else
-              child->show();
+    child->hide();
+
+    if (drag->exec(Qt::MoveAction | Qt::CopyAction, Qt::CopyAction) == Qt::MoveAction)
+        child->close();
+    else
+        child->show();
 }
 
 void QDropArea::resizeEvent(QResizeEvent *event)

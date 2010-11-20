@@ -7,11 +7,40 @@
 #include <QPixmap>
 #include <QWidget>
 
-QDragableLabel::QDragableLabel(const int &type, const int &number, QWidget *parent)
-    : QLabel(parent)
+QDragableLabel::QDragableLabel(const int _number, const Shape _shape, QWidget *_parent)
+   :QLabel(_parent),
+    m_number(_number),
+    m_shape(_shape),
+    m_front(Qt::red),
+    m_background(Qt::white)
 {
     setAcceptDrops(true);
+    drawPixmap();
+}
 
+QDragableLabel::QDragableLabel(const int _number, const Shape _shape, const QColor &_front, const QColor &_background, QWidget *_parent)
+   :QLabel(_parent),
+    m_number(_number),
+    m_shape(_shape),
+    m_front(_front),
+    m_background(_background)
+{
+    setAcceptDrops(true);
+    drawPixmap();
+}
+
+QDragableLabel::Shape QDragableLabel::getShape() const
+{
+    return m_shape;
+}
+
+int QDragableLabel::getNumber() const
+{
+    return m_number;
+}
+
+void QDragableLabel::drawPixmap()
+{
     int size = 15;
     resize(size,size);
 
@@ -33,9 +62,4 @@ QDragableLabel::QDragableLabel(const int &type, const int &number, QWidget *pare
     painter.end();
 
     setPixmap(QPixmap::fromImage(image));
-}
-
-QString QDragableLabel::labelText() const
-{
-    return m_labelText;
 }

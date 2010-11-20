@@ -8,13 +8,26 @@ class QWidget;
 class QDragableLabel : public QLabel
 {
 public:
-    explicit QDragableLabel(const int &type, const int &number, QWidget *parent);
-    int getType() const;
+    enum Shape {
+        Rectangle,
+        Cercle,
+        Triangle,
+        Triangle2,
+        Diamond
+    };
+
+    explicit QDragableLabel(const int _number, const Shape _shape, QWidget *_parent);
+    explicit QDragableLabel(const int _number, const Shape _shape, const QColor &_front = Qt::red, const QColor &_background = Qt::white, QWidget *_parent = NULL);
+
+    Shape getShape() const;
     int getNumber() const;
 
+    void drawPixmap();
+
 private:
-    int type;
-    int number;
+    int m_number;
+    Shape m_shape;
+    QColor m_front, m_background;
 };
 
 #endif // QDRAGABLELABEL_H
