@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "qdragablelabel.h"
 
 class QDropArea;
 
@@ -17,14 +18,16 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    static int getCurrentType();
-    static int getCurrentNumber();
+    int getCurrentNumber();
+    QDragableLabel::Shape getCurrentShape();
 
 protected:
     void closeEvent(QCloseEvent *event);
 
 private slots:
     void on_imagePathPB_clicked();
+    void slotTagAdded(const QDragableLabel *);
+    void slotTagMoved(const QDragableLabel *);
 
 private:
     void readSettings();

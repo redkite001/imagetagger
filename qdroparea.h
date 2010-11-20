@@ -3,6 +3,8 @@
 
 #include <QLabel>
 
+class QDragableLabel;
+
 class QDropArea : public QLabel
 {
     Q_OBJECT
@@ -16,19 +18,22 @@ public slots:
     void clear();
 
 signals:
+    void tagAdded(const QDragableLabel *);
+    void tagMoved(const QDragableLabel *);
 
 protected:
-     void dragEnterEvent(QDragEnterEvent *event);
-     void dragMoveEvent(QDragMoveEvent *event);
-     void dragLeaveEvent(QDragLeaveEvent *event);
-     void dropEvent(QDropEvent *event);
-     void mousePressEvent(QMouseEvent *event);
-     void resizeEvent(QResizeEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dragMoveEvent(QDragMoveEvent *event);
+    void dragLeaveEvent(QDragLeaveEvent *event);
+    void dropEvent(QDropEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void resizeEvent(QResizeEvent *event);
 
  private:
-     bool convertPoinFromLabelToRealPixmap(QPoint &_labelPoint);
+    bool convertPoinFromLabelToRealPixmap(QPoint &_labelPoint);
 
-     QPixmap m_pixmap;
+    QPixmap m_pixmap;
+    bool isNewTag;
 };
 
 #endif // QDROPAREA_H

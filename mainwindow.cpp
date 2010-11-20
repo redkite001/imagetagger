@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 
 #include "qdroparea.h"
-#include "qdragablelabel.h"
 #include <QtGui>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -17,18 +16,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->actionExit, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
     connect(ui->actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
-
-
-    // Test
-    //m_dropArea->loadImage("/home/redkite/Programs/Qt/ImageTagger/ImageTagger/testPict.jpg");
-/*
-    QDragableLabel *dl = new QDragableLabel(this);
-    dl->setScaledContents(true);
-    dl->setMaximumSize(60, 50);
-    dl->setPixmap(QPixmap(":/tags/tag1"));
-    ui->dockWidgetContents_3->layout()->addWidget(dl);
-    */
-    //ui->dockWidgetContents_3->layout()->addWidget(dl);
+    connect(m_dropArea, SIGNAL(tagAdded(const QDragableLabel *)), this, SLOT(slotTagAdded(const QDragableLabel *)));
+    connect(m_dropArea, SIGNAL(tagMoved(const QDragableLabel *)), this, SLOT(slotTagMoved(const QDragableLabel *)));
 }
 
 MainWindow::~MainWindow()
@@ -71,13 +60,22 @@ void MainWindow::writeSettings()
     settings.setValue("mainwindow/fullScreen", isFullScreen());
 }
 
-int MainWindow::getCurrentType()
-{
-    return 1;
-}
-
 int MainWindow::getCurrentNumber()
 {
-    return 1;
+    return ui->numberSB->value();
+}
+
+QDragableLabel::Shape MainWindow::getCurrentShape()
+{
+    return QDragableLabel::Cercle;
+}
+
+void MainWindow::slotTagAdded(const QDragableLabel *)
+{
+    ui->numberSB->setValue(ui->numberSB->value() + 1);
+}
+
+void MainWindow::slotTagMoved(const QDragableLabel *)
+{
 }
 

@@ -9,11 +9,11 @@ class QDragableLabel : public QLabel
 {
 public:
     enum Shape {
-        Rectangle,
         Cercle,
+        Diamond,
+        Rectangle,
         Triangle,
-        Triangle2,
-        Diamond
+        Triangle2
     };
 
     explicit QDragableLabel(const int _number, const Shape _shape, QWidget *_parent);

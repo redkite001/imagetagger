@@ -1,11 +1,13 @@
 #include "qdroparea.h"
 
-#include <QtGui>
+#include <QtGui>    // Remove this
 #include <QtDebug>
 #include "qdragablelabel.h"
+#include "mainwindow.h"
 
 QDropArea::QDropArea(QWidget *parent)
-   :QLabel(parent)
+   :QLabel(parent),
+    isNewTag(false)
 {
     setMinimumSize(200, 200);
     setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
@@ -59,12 +61,14 @@ void QDropArea::dropEvent(QDropEvent *event)
         newLabel->move(event->pos() - offset);
         newLabel->show();
         newLabel->setAttribute(Qt::WA_DeleteOnClose);
+        if (isNewTag) emit tagAdded(newLabel);
+        else          emit tagMoved(newLabel);
 
         if (event->source() == this) {
             event->setDropAction(Qt::MoveAction);
             event->accept();
         } else {
-            event->acceptProposedAction();
+            event->acceptProposedAction(); // When the tag comes from an other instance of the application
         }
     } else {
         event->ignore();
@@ -80,10 +84,14 @@ void QDropArea::dragLeaveEvent(QDragLeaveEvent *event)
 void QDropArea::mousePressEvent(QMouseEvent *event)
 {
     QDragableLabel *child = static_cast<QDragableLabel*>(childAt(event->pos()));
-    if (!child) {
-        child = new QDragableLabel(1,QDragableLabel::Cercle, this);
+    if (child) {
+        isNewTag = false;
+    } else {
+        MainWindow *mw = (MainWindow *)parent();
+        child = new QDragableLabel(mw->getCurrentNumber(), mw->getCurrentShape(), this);
         child->move(event->pos() - child->rect().center());
         child->setAttribute(Qt::WA_DeleteOnClose);
+        isNewTag = true;
     }
 
     QPoint hotSpot = event->pos() - child->pos();
@@ -100,7 +108,7 @@ void QDropArea::mousePressEvent(QMouseEvent *event)
 
     child->hide();
 
-    if (drag->exec(Qt::MoveAction | Qt::CopyAction, Qt::CopyAction) == Qt::MoveAction)
+    if (drag->exec(Qt::MoveAction | Qt::CopyAction, Qt::MoveAction) == Qt::MoveAction)
         child->close();
     else
         child->show();
