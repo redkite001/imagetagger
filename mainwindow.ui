@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>775</width>
-    <height>452</height>
+    <width>762</width>
+    <height>461</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>775</width>
+     <width>762</width>
      <height>20</height>
     </rect>
    </property>
@@ -43,8 +43,8 @@
   <widget class="QDockWidget" name="toolDW">
    <property name="minimumSize">
     <size>
-     <width>295</width>
-     <height>219</height>
+     <width>304</width>
+     <height>249</height>
     </size>
    </property>
    <property name="acceptDrops">
@@ -109,59 +109,86 @@
        <property name="title">
         <string>Next Tag</string>
        </property>
-       <layout class="QFormLayout" name="formLayout">
-        <item row="0" column="0">
-         <widget class="QLabel" name="numberL">
-          <property name="text">
-           <string>Number :</string>
-          </property>
-         </widget>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <widget class="QPushButton" name="frontColorPB">
+            <property name="text">
+             <string>Front</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="backgroundColorPB">
+            <property name="text">
+             <string>Background</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
-        <item row="0" column="1">
-         <widget class="QSpinBox" name="numberSB">
-          <property name="minimum">
-           <number>1</number>
-          </property>
-          <property name="maximum">
-           <number>99</number>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="shapeL">
-          <property name="text">
-           <string>Shape :</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QComboBox" name="shapeCB">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
           <item>
-           <property name="text">
-            <string>Cercle</string>
-           </property>
+           <widget class="QLabel" name="numberL">
+            <property name="text">
+             <string>Number :</string>
+            </property>
+           </widget>
           </item>
           <item>
-           <property name="text">
-            <string>Diamond</string>
-           </property>
+           <widget class="QSpinBox" name="numberSB">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>99</number>
+            </property>
+           </widget>
           </item>
           <item>
-           <property name="text">
-            <string>Rectangle</string>
-           </property>
+           <widget class="QLabel" name="shapeL">
+            <property name="text">
+             <string>Shape :</string>
+            </property>
+           </widget>
           </item>
           <item>
-           <property name="text">
-            <string>Triangle</string>
-           </property>
+           <widget class="QComboBox" name="shapeCB">
+            <item>
+             <property name="text">
+              <string>Cercle</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Diamond</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Rectangle</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Square</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Tirangle</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Triangle2</string>
+             </property>
+            </item>
+           </widget>
           </item>
-          <item>
-           <property name="text">
-            <string>Triangle2</string>
-           </property>
-          </item>
-         </widget>
+         </layout>
         </item>
        </layout>
       </widget>

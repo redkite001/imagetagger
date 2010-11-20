@@ -18,14 +18,18 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    int getCurrentNumber();
+    int                   getCurrentNumber();
     QDragableLabel::Shape getCurrentShape();
+    const QColor &        getCurrentFrontColor();
+    const QColor &        getCurrentBackgroundColor();
 
 protected:
     void closeEvent(QCloseEvent *event);
 
 private slots:
     void on_imagePathPB_clicked();
+    void on_frontColorPB_clicked();
+    void on_backgroundColorPB_clicked();
     void slotTagAdded(const QDragableLabel *);
     void slotTagMoved(const QDragableLabel *);
 
@@ -35,6 +39,8 @@ private:
 
     Ui::MainWindow *ui;
     QDropArea *m_dropArea;
+    QColor m_tagFront;
+    QColor m_tagBackground;
 };
 
 #endif // MAINWINDOW_H

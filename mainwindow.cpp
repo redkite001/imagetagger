@@ -2,11 +2,17 @@
 #include "ui_mainwindow.h"
 
 #include "qdroparea.h"
-#include <QtGui>
+#include <QColorDialog>
+#include <QFileDialog>
+#include <QLineEdit>
+#include <QSettings>
+
 
 MainWindow::MainWindow(QWidget *parent)
    :QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    m_tagFront(Qt::red),
+    m_tagBackground(QColor())
 {
     ui->setupUi(this);
     readSettings();
@@ -67,7 +73,7 @@ int MainWindow::getCurrentNumber()
 
 QDragableLabel::Shape MainWindow::getCurrentShape()
 {
-    return QDragableLabel::Cercle;
+    return (QDragableLabel::Shape)ui->shapeCB->currentIndex();
 }
 
 void MainWindow::slotTagAdded(const QDragableLabel *)
@@ -77,5 +83,28 @@ void MainWindow::slotTagAdded(const QDragableLabel *)
 
 void MainWindow::slotTagMoved(const QDragableLabel *)
 {
+}
+
+void MainWindow::on_frontColorPB_clicked()
+{
+    m_tagFront = QColorDialog::getColor(m_tagFront, this, tr("Choose a text color"));
+}
+
+void MainWindow::on_backgroundColorPB_clicked()
+{
+    QColor init(qRgba(0, 0, 0, 0));
+    if (m_tagBackground.isValid())
+        init = m_tagBackground;
+    m_tagBackground = QColorDialog::getColor(m_tagBackground, this, tr("Choose a background color"));
+}
+
+const QColor & MainWindow::getCurrentFrontColor()
+{
+    return m_tagFront;
+}
+
+const QColor & MainWindow::getCurrentBackgroundColor()
+{
+    return m_tagBackground;
 }
 

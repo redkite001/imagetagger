@@ -53,11 +53,12 @@ void QDropArea::dropEvent(QDropEvent *event)
 
         int number, tmpShape;
         QDragableLabel::Shape shape;
+        QColor front, background;
         QPoint offset;
-        dataStream >> number >> tmpShape >> offset;
+        dataStream >> number >> tmpShape >> front >> background >> offset;
         shape = (QDragableLabel::Shape)tmpShape;
 
-        QDragableLabel *newLabel = new QDragableLabel(number, shape, this);
+        QDragableLabel *newLabel = new QDragableLabel(number, shape, front, background, this);
         newLabel->move(event->pos() - offset);
         newLabel->show();
         newLabel->setAttribute(Qt::WA_DeleteOnClose);
@@ -84,12 +85,16 @@ void QDropArea::dragLeaveEvent(QDragLeaveEvent *event)
 void QDropArea::mousePressEvent(QMouseEvent *event)
 {
     QDragableLabel *child = static_cast<QDragableLabel*>(childAt(event->pos()));
+
+    if (event->button() != Qt::LeftButton)
+        return;
+
     if (child) {
         isNewTag = false;
     } else {
         MainWindow *mw = (MainWindow *)parent();
-        child = new QDragableLabel(mw->getCurrentNumber(), mw->getCurrentShape(), this);
-        child->move(event->pos() - child->rect().center());
+        child = new QDragableLabel(mw->getCurrentNumber(), mw->getCurrentShape(), mw->getCurrentFrontColor(), mw->getCurrentBackgroundColor(), this);
+        child->move(event->pos() - child->pixmap()->rect().center());
         child->setAttribute(Qt::WA_DeleteOnClose);
         isNewTag = true;
     }
@@ -98,7 +103,7 @@ void QDropArea::mousePressEvent(QMouseEvent *event)
 
     QByteArray itemData;
     QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-    dataStream << child->getNumber() << (qint32)child->getShape() << QPoint(hotSpot);
+    dataStream << child->getNumber() << (qint32)child->getShape() << child->getFrontColor() << child->getBackgroundColor() << QPoint(hotSpot);
     QMimeData *mimeData = new QMimeData;
     mimeData->setData("application/x-tag", itemData);
     QDrag *drag = new QDrag(this);
@@ -108,7 +113,7 @@ void QDropArea::mousePressEvent(QMouseEvent *event)
 
     child->hide();
 
-    if (drag->exec(Qt::MoveAction | Qt::CopyAction, Qt::MoveAction) == Qt::MoveAction)
+    if (drag->exec(Qt::MoveAction, Qt::MoveAction) == Qt::MoveAction)
         child->close();
     else
         child->show();
