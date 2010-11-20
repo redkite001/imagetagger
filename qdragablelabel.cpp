@@ -1,36 +1,41 @@
 #include "qdragablelabel.h"
 
-#include <QtGui>
+#include <QImage>
+#include <QFont>
+#include <QPainter>
+#include <QPen>
+#include <QPixmap>
+#include <QWidget>
 
-QDragableLabel::QDragableLabel(QWidget *parent) :
-    QLabel(parent)
+QDragableLabel::QDragableLabel(const int &type, const int &number, QWidget *parent)
+    : QLabel(parent)
 {
     setAcceptDrops(true);
-}
 
-void QDragableLabel::mousePressEvent(QMouseEvent *event)
-{/*
-    QLabel *child = static_cast<QLabel *>(childAt(event->pos()));
-    if (!child)
-        return;
-*/
-    QPixmap pixmap = *(this->pixmap());
+    int size = 15;
+    resize(size,size);
 
-    QByteArray itemData;
-    QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-    dataStream << pixmap << QPoint(event->pos());
+    QImage image(size, size, QImage::Format_ARGB32_Premultiplied);
+    image.fill(qRgba(0, 0, 0, 0));
 
-    QMimeData *mimeData = new QMimeData;
-    mimeData->setData("application/x-dnditemdata", itemData);
-
-    QDrag *drag = new QDrag(this);
-    drag->setMimeData(mimeData);
-    drag->setPixmap(pixmap);
-    drag->setHotSpot(event->pos());
+    QFont font;
+    font.setStyleStrategy(QFont::ForceOutline);
 
     QPainter painter;
-    painter.begin(&pixmap);
-    painter.drawPixmap(event->x() + pixmap.rect().x(), event->y(), pixmap);
+    painter.begin(&image);
+    painter.setRenderHint(QPainter::Antialiasing);
+    QPen pen;
+    pen.setColor(Qt::red);
+    pen.setWidth(2);
+    painter.setPen(pen);
+
+    painter.drawEllipse(1, 1, image.height()-2, image.height()-2);
     painter.end();
 
+    setPixmap(QPixmap::fromImage(image));
+}
+
+QString QDragableLabel::labelText() const
+{
+    return m_labelText;
 }

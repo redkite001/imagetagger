@@ -3,20 +3,18 @@
 
 #include <QLabel>
 
+class QWidget;
+
 class QDragableLabel : public QLabel
 {
-    Q_OBJECT
-
 public:
-    explicit QDragableLabel(QWidget *parent = 0);
+    explicit QDragableLabel(const int &type, const int &number, QWidget *parent);
+    int getType() const;
+    int getNumber() const;
 
-protected:
-    void mousePressEvent(QMouseEvent *event);
-
-signals:
-
-public slots:
-
+private:
+    int type;
+    int number;
 };
 
 #endif // QDRAGABLELABEL_H

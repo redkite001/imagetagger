@@ -17,6 +17,9 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    static int getCurrentType();
+    static int getCurrentNumber();
+
 protected:
     void closeEvent(QCloseEvent *event);
 

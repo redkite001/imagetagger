@@ -5,8 +5,8 @@
 #include "qdragablelabel.h"
 #include <QtGui>
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
+MainWindow::MainWindow(QWidget *parent)
+   :QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -20,14 +20,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     // Test
-    m_dropArea->loadImage("/home/redkite/Pictures/buse140.jpg");
-    /*
+    //m_dropArea->loadImage("/home/redkite/Programs/Qt/ImageTagger/ImageTagger/testPict.jpg");
+/*
     QDragableLabel *dl = new QDragableLabel(this);
     dl->setScaledContents(true);
     dl->setMaximumSize(60, 50);
     dl->setPixmap(QPixmap(":/tags/tag1"));
     ui->dockWidgetContents_3->layout()->addWidget(dl);
     */
+    //ui->dockWidgetContents_3->layout()->addWidget(dl);
 }
 
 MainWindow::~MainWindow()
@@ -68,5 +69,15 @@ void MainWindow::writeSettings()
 
     settings.setValue("mainwindow/size", size());
     settings.setValue("mainwindow/fullScreen", isFullScreen());
+}
+
+int MainWindow::getCurrentType()
+{
+    return 1;
+}
+
+int MainWindow::getCurrentNumber()
+{
+    return 1;
 }
 
