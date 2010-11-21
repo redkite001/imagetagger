@@ -17,8 +17,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     readSettings();
 
-    m_dropArea = new QDropArea(this);
-    this->setCentralWidget(m_dropArea);
+    m_dropArea = new QDropArea();
+    ui->scrollArea->setWidget(m_dropArea);
+    ui->scrollArea->setBackgroundRole(QPalette::Dark);
+    ui->scrollArea->setWidgetResizable(false);
+    ui->scrollArea->setAlignment(Qt::AlignCenter);
 
     connect(ui->actionExit, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
     connect(ui->actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
@@ -35,6 +38,12 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     Q_UNUSED(event);
     writeSettings();
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    Q_UNUSED(event);
+    m_dropArea->fitImage();
 }
 
 void MainWindow::on_imagePathPB_clicked()

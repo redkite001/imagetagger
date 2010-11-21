@@ -23,4 +23,5 @@ int main(int argc, char *argv[])
  * - choose different tags
  * - Add zoom percentage and allow scroll bar
  * - Add a version box and automatically increment build number (and by hand major and minor)
+ * - Add the possibility to drop an image
  */

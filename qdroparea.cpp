@@ -6,13 +6,11 @@
 #include "mainwindow.h"
 
 QDropArea::QDropArea(QWidget *parent)
-   :QLabel(parent),
+   :QLabel(tr("< Choose an image >"), parent),
     isNewTag(false)
 {
-    setMinimumSize(200, 200);
-    setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
+    //setFrameStyle(QFrame::Box  | QFrame::Sunken);
     setAlignment(Qt::AlignCenter);
-
     setAcceptDrops(true);
 }
 
@@ -84,6 +82,10 @@ void QDropArea::dragLeaveEvent(QDragLeaveEvent *event)
 
 void QDropArea::mousePressEvent(QMouseEvent *event)
 {
+    if (!pixmap())
+        return;
+
+    // Get the tag if we have clicked on one
     QDragableLabel *child = static_cast<QDragableLabel*>(childAt(event->pos()));
 
     if (event->button() != Qt::LeftButton)
@@ -92,7 +94,8 @@ void QDropArea::mousePressEvent(QMouseEvent *event)
     if (child) {
         isNewTag = false;
     } else {
-        MainWindow *mw = (MainWindow *)parent();
+        // Create a new tag if we have not clicked on an existing one
+        MainWindow *mw = (MainWindow *)topLevelWidget();
         child = new QDragableLabel(mw->getCurrentNumber(), mw->getCurrentShape(), mw->getCurrentFrontColor(), mw->getCurrentBackgroundColor(), this);
         child->move(event->pos() - child->pixmap()->rect().center());
         child->setAttribute(Qt::WA_DeleteOnClose);
@@ -101,6 +104,7 @@ void QDropArea::mousePressEvent(QMouseEvent *event)
 
     QPoint hotSpot = event->pos() - child->pos();
 
+    // Save datas in the QDrag
     QByteArray itemData;
     QDataStream dataStream(&itemData, QIODevice::WriteOnly);
     dataStream << child->getNumber() << (qint32)child->getShape() << child->getFrontColor() << child->getBackgroundColor() << QPoint(hotSpot);
@@ -121,22 +125,27 @@ void QDropArea::mousePressEvent(QMouseEvent *event)
 
 void QDropArea::resizeEvent(QResizeEvent *event)
 {
-    Q_UNUSED(event);
-    //qDebug("[%d,%d] [%d,%d]", event->oldSize().width(), event->oldSize().height(), event->size().width(), event->size().height());
-    //fitImage();
+    qreal scaleFactor = (qreal)event->size().width() / event->oldSize().width();
+    QList<QDragableLabel *> allTags = findChildren<QDragableLabel *>();
+
+    foreach (QDragableLabel *tag, allTags)
+        tag->move(QPointF(tag->pos()) * scaleFactor);
 }
 
 void QDropArea::loadImage(const QString &fileName, const char *format, Qt::ImageConversionFlags flags)
 {
     m_pixmap = QPixmap(fileName, format, flags);
-    //fitImage();
-    setPixmap(m_pixmap);
+    fitImage();
 }
 
 void QDropArea::fitImage()
 {   // TODO : reset a timer each time called in order to avoid resizing each time the size change when resizing the window
-//    if (!m_pixmap.isNull())
-//        setPixmap(m_pixmap.scaled(size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    if (!m_pixmap.isNull()) {
+        setPixmap(m_pixmap.scaled(parentWidget()->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        QSize sizeOfScalledPixmap = m_pixmap.size();
+        sizeOfScalledPixmap.scale(parentWidget()->size(), Qt::KeepAspectRatio);
+        resize(sizeOfScalledPixmap);
+    }
 }
 
 void QDropArea::clear()
