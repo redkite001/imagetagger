@@ -129,13 +129,14 @@ void QDropArea::resizeEvent(QResizeEvent *event)
     QList<QDragableLabel *> allTags = findChildren<QDragableLabel *>();
 
     foreach (QDragableLabel *tag, allTags)
-        tag->move(QPointF(tag->pos()) * scaleFactor);
+        tag->move(tag->pos() * scaleFactor);
 }
 
 void QDropArea::loadImage(const QString &fileName, const char *format, Qt::ImageConversionFlags flags)
 {
     m_pixmap = QPixmap(fileName, format, flags);
-    fitImage();
+    fixedImage();
+    //fitImage();
 }
 
 void QDropArea::fitImage()
@@ -145,6 +146,14 @@ void QDropArea::fitImage()
         QSize sizeOfScalledPixmap = m_pixmap.size();
         sizeOfScalledPixmap.scale(parentWidget()->size(), Qt::KeepAspectRatio);
         resize(sizeOfScalledPixmap);
+    }
+}
+
+void QDropArea::fixedImage()
+{
+    if (!m_pixmap.isNull()) {
+        setPixmap(m_pixmap);
+        resize(m_pixmap.size());
     }
 }
 

@@ -15,6 +15,7 @@ public:
 
 public slots:
     void fitImage();
+    void fixedImage();
     void clear();
 
 signals:

@@ -43,7 +43,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
-    m_dropArea->fitImage();
+    //m_dropArea->fitImage();
 }
 
 void MainWindow::on_imagePathPB_clicked()
