@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->actionExit, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
     connect(ui->actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+    connect(ui->imagePathCB, SIGNAL(activated(QString)), this, SLOT(slotTryToLoadPath(QString)));
     connect(m_dropArea, SIGNAL(tagAdded(const QDragableLabel *)), this, SLOT(slotTagAdded(const QDragableLabel *)));
     connect(m_dropArea, SIGNAL(tagMoved(const QDragableLabel *)), this, SLOT(slotTagMoved(const QDragableLabel *)));
 }
@@ -52,7 +53,7 @@ void MainWindow::on_imagePathPB_clicked()
 
    if (!imagePath.isEmpty()) {
        ui->imagePathCB->lineEdit()->setText(imagePath);
-       m_dropArea->loadImage(imagePath);
+       slotTryToLoadPath(imagePath);
    }
 }
 
@@ -62,9 +63,12 @@ void MainWindow::readSettings()
 
     if (settings.contains("mainwindow/size"))
         resize(settings.value("mainwindow/size").toSize());
-
     if (settings.value("mainwindow/size", false).toBool())
         showFullScreen();
+    if (settings.contains("mainwindow/lastFiles")) {
+        ui->imagePathCB->addItems(settings.value("mainwindow/lastFiles").toStringList());
+        ui->imagePathCB->setCurrentIndex(-1);
+    }
 }
 
 void MainWindow::writeSettings()
@@ -73,6 +77,10 @@ void MainWindow::writeSettings()
 
     settings.setValue("mainwindow/size", size());
     settings.setValue("mainwindow/fullScreen", isFullScreen());
+    QStringList lastFiles;
+    for (int i = 0; i < 10 && i < ui->imagePathCB->count(); ++i)
+        lastFiles << ui->imagePathCB->itemText(i);
+    settings.setValue("mainwindow/lastFiles", lastFiles);
 }
 
 int MainWindow::getCurrentNumber()
@@ -83,6 +91,17 @@ int MainWindow::getCurrentNumber()
 QDragableLabel::Shape MainWindow::getCurrentShape()
 {
     return (QDragableLabel::Shape)ui->shapeCB->currentIndex();
+}
+
+void MainWindow::slotTryToLoadPath(const QString &_path)
+{
+    int index = ui->imagePathCB->findText(_path);
+    if (index >= 0) ui->imagePathCB->removeItem(index);
+
+    if (QFile::exists(_path)) {
+        m_dropArea->loadImage(_path);
+        ui->imagePathCB->insertItem(0, _path);
+    }
 }
 
 void MainWindow::slotTagAdded(const QDragableLabel *)

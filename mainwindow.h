@@ -31,6 +31,7 @@ private slots:
     void on_imagePathPB_clicked();
     void on_frontColorPB_clicked();
     void on_backgroundColorPB_clicked();
+    void slotTryToLoadPath(const QString &);
     void slotTagAdded(const QDragableLabel *);
     void slotTagMoved(const QDragableLabel *);
 
@@ -42,6 +43,8 @@ private:
     QDropArea *m_dropArea;
     QColor m_tagFront;
     QColor m_tagBackground;
+    enum { MaxRecentFiles = 10 };
+    QStringList m_recentFiles;
 };
 
 #endif // MAINWINDOW_H
