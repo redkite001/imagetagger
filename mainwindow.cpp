@@ -5,6 +5,8 @@
 #include <QColorDialog>
 #include <QFileDialog>
 #include <QLineEdit>
+#include <QPrintDialog>
+#include <QPrinter>
 #include <QSettings>
 
 
@@ -115,7 +117,7 @@ void MainWindow::slotTagMoved(const QDragableLabel *)
 
 void MainWindow::on_frontColorPB_clicked()
 {
-    m_tagFront = QColorDialog::getColor(m_tagFront, this, tr("Choose a text color"));
+    m_tagFront = QColorDialog::getColor(m_tagFront, this, trUtf8("Choose a text color"));
 }
 
 void MainWindow::on_backgroundColorPB_clicked()
@@ -123,7 +125,26 @@ void MainWindow::on_backgroundColorPB_clicked()
     QColor init(qRgba(0, 0, 0, 0));
     if (m_tagBackground.isValid())
         init = m_tagBackground;
-    m_tagBackground = QColorDialog::getColor(m_tagBackground, this, tr("Choose a background color"));
+    m_tagBackground = QColorDialog::getColor(m_tagBackground, this, trUtf8("Choose a background color"));
+}
+
+void MainWindow::on_actionPrint_triggered()
+{
+    QPrinter printer;
+    QPrintDialog printDialog(&printer, this);
+    if (printDialog.exec() == QDialog::Accepted) {
+        // print ...
+    }
+}
+
+void MainWindow::on_actionSaveAs_triggered()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, trUtf8("Save file as ..."), QDir::homePath(), trUtf8("Images (*.png *.jpg *.jpeg)"));
+
+    if (!fileName.isEmpty()) {
+        QPixmap pixmap = *m_dropArea->pixmap();
+        pixmap.save(fileName, "PNG"); // writes pixmap into bytes in PNG format
+    }
 }
 
 const QColor & MainWindow::getCurrentFrontColor()
@@ -135,4 +156,7 @@ const QColor & MainWindow::getCurrentBackgroundColor()
 {
     return m_tagBackground;
 }
+
+
+
 
