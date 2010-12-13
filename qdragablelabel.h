@@ -7,7 +7,9 @@ class QWidget;
 
 class QDragableLabel : public QLabel
 {
+    Q_OBJECT
 public:
+
     enum Shape {
         Cercle = 0,
         Diamond = 1,
@@ -27,7 +29,11 @@ public:
 
     void drawPixmap();
 
+public slots:
+    void editTag();
+
 private:
+
     int m_number;
     Shape m_shape;
     QColor m_front, m_background;

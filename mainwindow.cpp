@@ -101,8 +101,11 @@ void MainWindow::slotTryToLoadPath(const QString &_path)
     if (index >= 0) ui->imagePathCB->removeItem(index);
 
     if (QFile::exists(_path)) {
+        m_dropArea->clear();
         m_dropArea->loadImage(_path);
         ui->imagePathCB->insertItem(0, _path);
+        ui->imagePathCB->setCurrentIndex(0);
+        ui->numberSB->setValue(1);
     }
 }
 
@@ -142,7 +145,18 @@ void MainWindow::on_actionSaveAs_triggered()
     QString fileName = QFileDialog::getSaveFileName(this, trUtf8("Save file as ..."), QDir::homePath(), trUtf8("Images (*.png *.jpg *.jpeg)"));
 
     if (!fileName.isEmpty()) {
-        QPixmap pixmap = *m_dropArea->pixmap();
+        //QPixmap pixmap = *m_dropArea->pixmap();
+        QPixmap pixmap = QPixmap::grabWidget(m_dropArea);
+        pixmap.save(fileName, "PNG"); // writes pixmap into bytes in PNG format
+    }
+}
+
+void MainWindow::on_actionExport_triggered()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, trUtf8("Save file as ..."), QDir::homePath(), trUtf8("Images (*.png *.jpg *.jpeg)"));
+
+    if (!fileName.isEmpty()) {
+        QPixmap pixmap = QPixmap::grabWidget(m_dropArea);
         pixmap.save(fileName, "PNG"); // writes pixmap into bytes in PNG format
     }
 }

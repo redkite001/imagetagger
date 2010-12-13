@@ -2,6 +2,8 @@
 
 #include <QImage>
 #include <QFont>
+#include <QInputDialog>
+#include <QMouseEvent>
 #include <QPainter>
 #include <QPen>
 #include <QPixmap>
@@ -115,4 +117,18 @@ const QColor & QDragableLabel::getFrontColor() const
 const QColor & QDragableLabel::getBackgroundColor() const
 {
     return m_background;
+}
+
+void QDragableLabel::editTag()  //TODO add the choice of shape, color, ...
+{
+    bool ok;
+    int value = QInputDialog::getInt(this, trUtf8("Edit tag"), QString(), m_number, 1, 999999, 1, &ok);
+
+    if (!ok)
+        return;
+
+    m_number = value;
+    drawPixmap();
+    hide();
+    show();
 }
