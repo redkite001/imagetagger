@@ -18,10 +18,11 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    int                   getCurrentNumber();
-    QDragableLabel::Shape getCurrentShape();
-    const QColor &        getCurrentFrontColor();
-    const QColor &        getCurrentBackgroundColor();
+    QFont                 getCurrentFont() const;
+    int                   getCurrentNumber() const;
+    QDragableLabel::Shape getCurrentShape() const;
+    const QColor &        getCurrentFrontColor() const;
+    const QColor &        getCurrentBackgroundColor() const;
 
 protected:
     void closeEvent(QCloseEvent *event);

@@ -54,11 +54,12 @@ void QDropArea::dropEvent(QDropEvent *event)
         int number, tmpShape;
         QDragableLabel::Shape shape;
         QColor front, background;
+        QFont font;
         QPoint offset;
-        dataStream >> number >> tmpShape >> front >> background >> offset;
+        dataStream >> number >> tmpShape >> front >> background >> font >> offset;
         shape = (QDragableLabel::Shape)tmpShape;
 
-        QDragableLabel *newLabel = new QDragableLabel(number, shape, front, background, this);
+        QDragableLabel *newLabel = new QDragableLabel(number, shape, front, background, font, this);
         newLabel->move(event->pos() - offset);
         newLabel->show();
         newLabel->setAttribute(Qt::WA_DeleteOnClose);
@@ -98,7 +99,7 @@ void QDropArea::mousePressEvent(QMouseEvent *event)
         } else {
             // Create a new tag if we have not clicked on an existing one
             MainWindow *mw = (MainWindow *)topLevelWidget();
-            child = new QDragableLabel(mw->getCurrentNumber(), mw->getCurrentShape(), mw->getCurrentFrontColor(), mw->getCurrentBackgroundColor(), this);
+            child = new QDragableLabel(mw->getCurrentNumber(), mw->getCurrentShape(), mw->getCurrentFrontColor(), mw->getCurrentBackgroundColor(), mw->getCurrentFont(), this);
             child->move(event->pos() - child->pixmap()->rect().center());
             child->setAttribute(Qt::WA_DeleteOnClose);
             isNewTag = true;
@@ -109,7 +110,7 @@ void QDropArea::mousePressEvent(QMouseEvent *event)
         // Save datas in the QDrag
         QByteArray itemData;
         QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-        dataStream << child->getNumber() << (qint32)child->getShape() << child->getFrontColor() << child->getBackgroundColor() << QPoint(hotSpot);
+        dataStream << child->getNumber() << (qint32)child->getShape() << child->getFrontColor() << child->getBackgroundColor() << child->getFont() << QPoint(hotSpot);
         QMimeData *mimeData = new QMimeData;
         mimeData->setData("application/x-tag", itemData);
         QDrag *drag = new QDrag(this);
@@ -128,10 +129,15 @@ void QDropArea::mousePressEvent(QMouseEvent *event)
         if (child) {
             m_temporaryTag = child;
 
-            QMenu popupMenu(tr("Label %1").arg("X"), this);
+            QMenu popupMenu(tr("Label %1").arg(child->getNumber()), this);
 
             popupMenu.addAction(tr("Edit"), child, SLOT(editTag()));
             popupMenu.addAction(tr("Delete"), this, SLOT(removeTag()));
+
+            popupMenu.exec(QCursor::pos());
+        } else {
+            QMenu popupMenu(tr("All Labels"), this);
+            popupMenu.addAction(tr("Delete All"), this, SLOT(removeTag()));
 
             popupMenu.exec(QCursor::pos());
         }
@@ -210,13 +216,15 @@ bool QDropArea::convertPoinFromLabelToRealPixmap(QPoint &_labelPoint)
 
 void QDropArea::removeTag()
 {
-    if (m_temporaryTag)
-    {
+    if (m_temporaryTag) {
         m_tagList.removeAll(m_temporaryTag);
         m_temporaryTag->close();
         m_temporaryTag = NULL;
-        qDebug("%d", m_tagList.size());
+    } else {
+        while(!m_tagList.isEmpty())
+            m_tagList.takeFirst()->close();
     }
+    qDebug("Nbr of tags : %d", m_tagList.size());
 }
 
 

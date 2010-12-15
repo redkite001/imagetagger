@@ -20,12 +20,13 @@ QDragableLabel::QDragableLabel(const int _number, const Shape _shape, QWidget *_
     drawPixmap();
 }
 
-QDragableLabel::QDragableLabel(const int _number, const Shape _shape, const QColor &_front, const QColor &_background, QWidget *_parent)
+QDragableLabel::QDragableLabel(const int _number, const Shape _shape, const QColor &_front, const QColor &_background, const QFont &_font, QWidget *_parent)
    :QLabel(_parent),
     m_number(_number),
     m_shape(_shape),
     m_front(_front),
-    m_background(_background)
+    m_background(_background),
+    m_font(_font)
 {
     setAcceptDrops(true);
     drawPixmap();
@@ -43,24 +44,25 @@ int QDragableLabel::getNumber() const
 
 void QDragableLabel::drawPixmap()
 {
-//    resize(size,size);
+    //font.setStyleStrategy(QFont::ForceOutline);
 
-    QFontMetrics metric(font());
-    QSize size = metric.size(Qt::TextSingleLine, QString::number(m_number));
+    QFontMetrics metric(m_font);
+    QRect rect = metric.boundingRect(QString::number(m_number));
+    //QSize rect = metric.size(Qt::TextSingleLine, QString::number(m_number));
     QImage image;
 
     switch (m_shape) {
         case Cercle:
-            image = QImage(qMax(size.width(), size.height()) + 4, qMax(size.width(), size.height()) + 4, QImage::Format_ARGB32_Premultiplied);
+            image = QImage(qMax(rect.width(), rect.height()) + 6, qMax(rect.width(), rect.height()) + 6, QImage::Format_ARGB32_Premultiplied);
             break;
         case Diamond:
             //image = QImage(qMax(size.width(), size.height()) + 4, qMax(size.width(), size.height()) + 4, QImage::Format_ARGB32_Premultiplied);
             break;
         case Rectangle:
-            image = QImage(size.width() + 6, size.height(), QImage::Format_ARGB32_Premultiplied);
+            image = QImage(rect.width() + 8, rect.height() + 6, QImage::Format_ARGB32_Premultiplied);
             break;
         case Square:
-            image = QImage(qMax(size.width() + 6, size.height()), qMax(size.width() + 6, size.height()), QImage::Format_ARGB32_Premultiplied);
+            image = QImage(qMax(rect.width() + 6, rect.height() + 4), qMax(rect.width() + 6, rect.height() + 4), QImage::Format_ARGB32_Premultiplied);
             break;
         case Triangle:
             break;
@@ -70,12 +72,10 @@ void QDragableLabel::drawPixmap()
 
     image.fill(qRgba(0, 0, 0, 0));
 
-    QFont font;
-    font.setStyleStrategy(QFont::ForceOutline);
-
     QPainter painter;
     painter.begin(&image);
     painter.setRenderHint(QPainter::Antialiasing);
+    painter.setFont(m_font);
 
     QPen pen;
     pen.setColor(m_front);
@@ -87,14 +87,14 @@ void QDragableLabel::drawPixmap()
 
     switch (m_shape) {
         case Cercle:
-            painter.drawEllipse(1, 1, image.width() - 2, image.height() - 2);
+            painter.drawEllipse(pen.width()/2, pen.width()/2, image.width() - pen.width(), image.height() - pen.width());
             break;
         case Diamond:
            //painter.dra(1, 1, image.width() - 2, image.height() - 2);
             break;
         case Rectangle:
         case Square:
-            painter.drawRect(1, 1, image.width() - 2, image.height() - 2);
+            painter.drawRect(pen.width()/2, pen.width()/2, image.width() - pen.width(), image.height() - pen.width());
             break;
         case Triangle:
             break;
@@ -117,6 +117,11 @@ const QColor & QDragableLabel::getFrontColor() const
 const QColor & QDragableLabel::getBackgroundColor() const
 {
     return m_background;
+}
+
+const QFont & QDragableLabel::getFont() const
+{
+    return m_font;
 }
 
 void QDragableLabel::editTag()  //TODO add the choice of shape, color, ...

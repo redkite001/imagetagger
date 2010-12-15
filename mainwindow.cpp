@@ -85,14 +85,29 @@ void MainWindow::writeSettings()
     settings.setValue("mainwindow/lastFiles", lastFiles);
 }
 
-int MainWindow::getCurrentNumber()
+QFont MainWindow::getCurrentFont() const
+{
+    return ui->fontCB->currentFont();
+}
+
+int MainWindow::getCurrentNumber() const
 {
     return ui->numberSB->value();
 }
 
-QDragableLabel::Shape MainWindow::getCurrentShape()
+QDragableLabel::Shape MainWindow::getCurrentShape() const
 {
     return (QDragableLabel::Shape)ui->shapeCB->currentIndex();
+}
+
+const QColor & MainWindow::getCurrentFrontColor() const
+{
+    return m_tagFront;
+}
+
+const QColor & MainWindow::getCurrentBackgroundColor() const
+{
+    return m_tagBackground;
 }
 
 void MainWindow::slotTryToLoadPath(const QString &_path)
@@ -161,15 +176,6 @@ void MainWindow::on_actionExport_triggered()
     }
 }
 
-const QColor & MainWindow::getCurrentFrontColor()
-{
-    return m_tagFront;
-}
-
-const QColor & MainWindow::getCurrentBackgroundColor()
-{
-    return m_tagBackground;
-}
 
 
 
