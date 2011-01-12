@@ -22,11 +22,20 @@ public:
     explicit QDragableLabel(const int _number, const Shape _shape, QWidget *_parent);
     explicit QDragableLabel(const int _number, const Shape _shape, const QColor &_front = Qt::red, const QColor &_background = QColor(), const QFont &_font = QFont(), QWidget *_parent = NULL);
 
-    Shape         getShape() const;
-    int           getNumber() const;
+    Shape getShape() const;
+    void  setShape(const Shape);
+
+    int  getNumber() const;
+    void setNumber(const int);
+
     const QColor &getFrontColor() const;
+    void          setFrontColor(const QColor &);
+
     const QColor &getBackgroundColor() const;
-    const QFont  &getFont() const;
+    void          setBackgroundColor(const QColor &);
+
+    const QFont &getFont() const;
+    void         setFont(const QFont &);
 
     void drawPixmap();
 

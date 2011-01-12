@@ -1,5 +1,7 @@
 #include "qdragablelabel.h"
 
+#include "edittagdialog.h"
+
 #include <QImage>
 #include <QFont>
 #include <QInputDialog>
@@ -37,9 +39,21 @@ QDragableLabel::Shape QDragableLabel::getShape() const
     return m_shape;
 }
 
+
+void QDragableLabel::setShape(const Shape _shape)
+{
+    m_shape = _shape;
+}
+
 int QDragableLabel::getNumber() const
 {
     return m_number;
+}
+
+
+void QDragableLabel::setNumber(const int _number)
+{
+    m_number = _number;
 }
 
 void QDragableLabel::drawPixmap()
@@ -114,9 +128,20 @@ const QColor & QDragableLabel::getFrontColor() const
     return m_front;
 }
 
+void QDragableLabel::setFrontColor(const QColor &_color)
+{
+    m_front = _color;
+}
+
 const QColor & QDragableLabel::getBackgroundColor() const
 {
     return m_background;
+}
+
+
+void QDragableLabel::setBackgroundColor(const QColor &_color)
+{
+    m_background = _color;
 }
 
 const QFont & QDragableLabel::getFont() const
@@ -124,15 +149,16 @@ const QFont & QDragableLabel::getFont() const
     return m_font;
 }
 
+void QDragableLabel::setFont(const QFont &_font)
+{
+    m_font = _font;
+}
+
 void QDragableLabel::editTag()  //TODO add the choice of shape, color, ...
 {
-    bool ok;
-    int value = QInputDialog::getInt(this, trUtf8("Edit tag"), QString(), m_number, 1, 999999, 1, &ok);
+    EditTagDialog *diag = new EditTagDialog(*this, this->parentWidget());
+    diag->exec();
 
-    if (!ok)
-        return;
-
-    m_number = value;
     drawPixmap();
     hide();
     show();
