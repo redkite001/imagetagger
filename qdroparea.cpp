@@ -81,8 +81,8 @@ void QDropArea::dropEvent(QDropEvent *event)
 
 void QDropArea::dragLeaveEvent(QDragLeaveEvent *event)
 {
-    //clear();
-    //event->accept();
+    clear();
+    event->accept();
 }
 
 void QDropArea::mousePressEvent(QMouseEvent *event)
@@ -123,14 +123,8 @@ void QDropArea::mousePressEvent(QMouseEvent *event)
         if (drag->exec(Qt::MoveAction, Qt::MoveAction) == Qt::MoveAction) {
             m_temporaryTag = child;
             removeTag();
-        } else {
-            if (isNewTag) {
-                // The user clicked inside the picture and released the button outside (tag must no be present)
-                m_temporaryTag = child;
-                removeTag();
-            } else
-                child->show();
-        }
+        } else
+            child->show();
     } else if (event->button() == Qt::RightButton) {
         if (child) {
             m_temporaryTag = child;
