@@ -3,6 +3,7 @@
 
 #include "qdroparea.h"
 #include <QColorDialog>
+#include <QClipboard>
 #include <QFileDialog>
 #include <QLineEdit>
 #include <QPrintDialog>
@@ -174,6 +175,11 @@ void MainWindow::on_actionExport_triggered()
         QPixmap pixmap = QPixmap::grabWidget(m_dropArea);
         pixmap.save(fileName, "PNG"); // writes pixmap into bytes in PNG format
     }
+}
+
+void MainWindow::on_actionCopy_triggered()
+{
+    qApp->clipboard()->setPixmap(QPixmap::grabWidget(m_dropArea));
 }
 
 

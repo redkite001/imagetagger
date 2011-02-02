@@ -135,11 +135,15 @@ void QDropArea::mousePressEvent(QMouseEvent *event)
             popupMenu.addAction(tr("Delete"), this, SLOT(removeTag()));
 
             popupMenu.exec(QCursor::pos());
+
+            m_temporaryTag = NULL;
         } else {
             QMenu popupMenu(tr("All Labels"), this);
             popupMenu.addAction(tr("Delete All"), this, SLOT(removeTag()));
 
             popupMenu.exec(QCursor::pos());
+
+            m_temporaryTag = NULL;
         }
     }
 }
