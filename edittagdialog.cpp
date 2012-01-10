@@ -6,9 +6,9 @@
 #include <QColorDialog>
 
 EditTagDialog::EditTagDialog(QDragableLabel &tag, QWidget *parent)
-    :QDialog(parent)
-    ,ui(new Ui::EditTagDialog)
-    ,m_tag(tag)
+    : QDialog(parent)
+    , ui(new Ui::EditTagDialog)
+    , m_tag(tag)
 {
     ui->setupUi(this);
 

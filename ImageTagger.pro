@@ -24,5 +24,4 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui \
     edittagdialog.ui
 
-RESOURCES += \
-    imagetagger.qrc
+RESOURCES +=

@@ -9,13 +9,14 @@
 #include <QPrintDialog>
 #include <QPrinter>
 #include <QSettings>
+#include <QTextStream>
 
 
 MainWindow::MainWindow(QWidget *parent)
-   :QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    m_tagFront(Qt::red),
-    m_tagBackground(QColor())
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+    , m_tagFront(Qt::red)
+    , m_tagBackground(QColor(0, 0, 0, 0))
 {
     ui->setupUi(this);
     readSettings();
@@ -55,7 +56,7 @@ void MainWindow::on_imagePathPB_clicked()
    QString imagePath = QFileDialog::getOpenFileName(this, trUtf8("Load an image"), QDir::homePath(), trUtf8("Images (*.jpg *.jpeg *.png)"));
 
    if (!imagePath.isEmpty()) {
-       ui->imagePathCB->lineEdit()->setText(imagePath);
+       ui->imagePathCB->setEditText(imagePath);
        slotTryToLoadPath(imagePath);
    }
 }
@@ -144,7 +145,7 @@ void MainWindow::on_backgroundColorPB_clicked()
     QColor init(qRgba(0, 0, 0, 0));
     if (m_tagBackground.isValid())
         init = m_tagBackground;
-    m_tagBackground = QColorDialog::getColor(m_tagBackground, this, trUtf8("Choose a background color"));
+    m_tagBackground = QColorDialog::getColor(m_tagBackground, this, trUtf8("Choose a background color"), QColorDialog::ShowAlphaChannel);
 }
 
 void MainWindow::on_actionPrint_triggered()
@@ -156,14 +157,32 @@ void MainWindow::on_actionPrint_triggered()
     }
 }
 
-void MainWindow::on_actionSaveAs_triggered()
+void MainWindow::on_actionLoadTags_triggered()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, trUtf8("Save file as ..."), QDir::homePath(), trUtf8("Images (*.png *.jpg *.jpeg)"));
+    // FIXIT: Find a better way for checking that an image is loaded
+    if (ui->imagePathCB->currentText().isEmpty())
+        return;
+
+    QString tagsPath = QFileDialog::getOpenFileName(this, trUtf8("Load a tag file"), QDir::homePath(), trUtf8("Text (*.txt)"));
+
+    if (!tagsPath.isEmpty()) {
+        m_dropArea->loadTags(tagsPath); // FIXIT: Check the structure of the file?
+    }
+}
+
+void MainWindow::on_actionSaveTagsAs_triggered()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, trUtf8("Save file as ..."), QDir::homePath(), trUtf8("Text (*.txt)"));
 
     if (!fileName.isEmpty()) {
-        //QPixmap pixmap = *m_dropArea->pixmap();
-        QPixmap pixmap = QPixmap::grabWidget(m_dropArea);
-        pixmap.save(fileName, "PNG"); // writes pixmap into bytes in PNG format
+        QFile file(fileName);
+        file.open(QIODevice::WriteOnly);
+        QTextStream out(&file);
+
+        QList<QDragableLabel *>tagList = m_dropArea->getTagList();
+        // Write the data
+        for (int i = 0; i < tagList.count();++i)
+            out << *tagList[i];
     }
 }
 

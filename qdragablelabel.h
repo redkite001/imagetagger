@@ -2,6 +2,7 @@
 #define QDRAGABLELABEL_H
 
 #include <QLabel>
+#include <QTextStream>
 
 class QWidget;
 
@@ -25,8 +26,8 @@ public:
     Shape getShape() const;
     void  setShape(const Shape);
 
-    int  getNumber() const;
-    void setNumber(const int);
+    quint32  getNumber() const;
+    void     setNumber(const quint32);
 
     const QColor &getFrontColor() const;
     void          setFrontColor(const QColor &);
@@ -44,10 +45,13 @@ public slots:
 
 private:
 
-    int m_number;
+    quint32 m_number;
     Shape m_shape;
     QColor m_front, m_background;
     QFont m_font;
 };
+
+QTextStream &operator<<(QTextStream &, const QDragableLabel &);
+QTextStream &operator>>(QTextStream &, QDragableLabel &);
 
 #endif // QDRAGABLELABEL_H

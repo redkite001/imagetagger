@@ -33,7 +33,8 @@ private slots:
     void on_frontColorPB_clicked();
     void on_backgroundColorPB_clicked();
     void on_actionPrint_triggered();
-    void on_actionSaveAs_triggered();
+    void on_actionLoadTags_triggered();
+    void on_actionSaveTagsAs_triggered();
     void on_actionExport_triggered();
     void on_actionCopy_triggered();
     void slotTryToLoadPath(const QString &);

@@ -13,12 +13,14 @@ class QDropArea : public QLabel
 public:
     explicit QDropArea(QWidget *parent = 0);
     void loadImage(const QString &fileName, const char *format = 0, Qt::ImageConversionFlags flags = Qt::AutoColor);
+    void loadTags(const QString &fileName);
 
 public slots:
     void fitImage();
     void fixedImage();
     void clear();
     void removeTag();
+    const QList<QDragableLabel *> &getTagList() const;
 
 signals:
     void tagAdded(const QDragableLabel *);
