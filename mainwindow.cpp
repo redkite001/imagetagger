@@ -65,10 +65,10 @@ void MainWindow::readSettings()
 {
     QSettings settings;
 
-    if (settings.contains("mainwindow/size"))
-        resize(settings.value("mainwindow/size").toSize());
-    if (settings.value("mainwindow/size", false).toBool())
-        showFullScreen();
+    if (settings.contains("mainwindow/geometry"))
+        restoreGeometry(settings.value("mainwindow/geometry").toByteArray());
+    if (settings.contains("mainwindow/state"))
+        restoreState(settings.value("mainwindow/state").toByteArray());
     if (settings.contains("mainwindow/lastFiles")) {
         ui->imagePathCB->addItems(settings.value("mainwindow/lastFiles").toStringList());
         ui->imagePathCB->setCurrentIndex(-1);
@@ -79,8 +79,8 @@ void MainWindow::writeSettings()
 {
     QSettings settings;
 
-    settings.setValue("mainwindow/size", size());
-    settings.setValue("mainwindow/fullScreen", isFullScreen());
+    settings.setValue("mainwindow/geometry", saveGeometry());
+    settings.setValue("mainwindow/state", saveState());
     QStringList lastFiles;
     for (int i = 0; i < 10 && i < ui->imagePathCB->count(); ++i)
         lastFiles << ui->imagePathCB->itemText(i);

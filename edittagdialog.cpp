@@ -43,6 +43,6 @@ void EditTagDialog::on_backgroundColorPB_clicked()
     QColor init(qRgba(0, 0, 0, 0));
     if (m_tagBackground.isValid())
         init = m_tagBackground;
-    m_tagBackground = QColorDialog::getColor(m_tagBackground, this, trUtf8("Choose a background color"));
+    m_tagBackground = QColorDialog::getColor(m_tagBackground, this, trUtf8("Choose a background color"), QColorDialog::ShowAlphaChannel);
 }
 

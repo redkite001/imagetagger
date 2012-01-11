@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     QApplication::setOrganizationName("RedKite");
     QApplication::setOrganizationDomain("redkite.be");
-    QApplication::setApplicationName("ImageTagger");
+    QApplication::setApplicationName("Image Tagger");
     MainWindow w;
 
     w.show();

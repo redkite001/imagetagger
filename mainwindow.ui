@@ -28,8 +28,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>491</width>
-         <height>441</height>
+         <width>495</width>
+         <height>448</height>
         </rect>
        </property>
       </widget>
@@ -43,7 +43,7 @@
      <x>0</x>
      <y>0</y>
      <width>767</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -83,8 +83,17 @@
      <height>247</height>
     </size>
    </property>
+   <property name="maximumSize">
+    <size>
+     <width>300</width>
+     <height>524287</height>
+    </size>
+   </property>
    <property name="acceptDrops">
     <bool>true</bool>
+   </property>
+   <property name="features">
+    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
    </property>
    <property name="allowedAreas">
     <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
@@ -152,9 +161,7 @@
         <item row="0" column="0" colspan="4">
          <widget class="QFontComboBox" name="fontCB">
           <property name="currentFont">
-           <font>
-            <family>Liberation Sans</family>
-           </font>
+           <font/>
           </property>
          </widget>
         </item>
