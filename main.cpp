@@ -25,3 +25,9 @@ int main(int argc, char *argv[])
  * - Add a version box and automatically increment build number (and by hand major and minor)
  * - Add the possibility to drop an image
  */
+
+
+/*****
+ * NOTES
+ * - For allowing to load jpeg files on Windows, I needed to copy next to my .exe the plugin from  "C:\Qt\4.8.0\plugins\imageformats\qjpeg4.dll" to "Image Tagger\imageformats\qjpeg4.dll"
+ */
