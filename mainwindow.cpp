@@ -11,7 +11,6 @@
 #include <QSettings>
 #include <QTextStream>
 
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -73,6 +72,15 @@ void MainWindow::readSettings()
         ui->imagePathCB->addItems(settings.value("mainwindow/lastFiles").toStringList());
         ui->imagePathCB->setCurrentIndex(-1);
     }
+
+    if (settings.contains("nexttag/front"))
+        m_tagFront = settings.value("nexttag/front").value<QColor>();
+    if (settings.contains("nexttag/background"))
+        m_tagBackground = settings.value("nexttag/background").value<QColor>();
+    if (settings.contains("nexttag/font"))
+        ui->fontCB->setCurrentFont(settings.value("nexttag/font").value<QFont>());
+    if (settings.contains("nexttag/shape"))
+        ui->shapeCB->setCurrentIndex(settings.value("nexttag/shape").toInt());
 }
 
 void MainWindow::writeSettings()
@@ -85,6 +93,11 @@ void MainWindow::writeSettings()
     for (int i = 0; i < 10 && i < ui->imagePathCB->count(); ++i)
         lastFiles << ui->imagePathCB->itemText(i);
     settings.setValue("mainwindow/lastFiles", lastFiles);
+
+    settings.setValue("nexttag/front", getCurrentFrontColor());
+    settings.setValue("nexttag/background", getCurrentBackgroundColor());
+    settings.setValue("nexttag/font", getCurrentFont());
+    settings.setValue("nexttag/shape", getCurrentShape());
 }
 
 QFont MainWindow::getCurrentFont() const
@@ -137,15 +150,16 @@ void MainWindow::slotTagMoved(const QDragableLabel *)
 
 void MainWindow::on_frontColorPB_clicked()
 {
-    m_tagFront = QColorDialog::getColor(m_tagFront, this, trUtf8("Choose a text color"));
+    QColor newFrontColor = QColorDialog::getColor(m_tagFront, this, trUtf8("Choose a text color"));
+    if (newFrontColor.isValid())
+        m_tagFront = newFrontColor;
 }
 
 void MainWindow::on_backgroundColorPB_clicked()
 {
-    QColor init(qRgba(0, 0, 0, 0));
-    if (m_tagBackground.isValid())
-        init = m_tagBackground;
-    m_tagBackground = QColorDialog::getColor(m_tagBackground, this, trUtf8("Choose a background color"), QColorDialog::ShowAlphaChannel);
+    QColor newBackgroundColor = QColorDialog::getColor(m_tagBackground, this, trUtf8("Choose a background color"), QColorDialog::ShowAlphaChannel);
+    if (newBackgroundColor.isValid())
+        m_tagBackground = newBackgroundColor;
 }
 
 void MainWindow::on_actionPrint_triggered()

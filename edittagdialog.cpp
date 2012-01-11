@@ -35,14 +35,15 @@ void EditTagDialog::on_buttonBox_accepted()
 
 void EditTagDialog::on_frontColorPB_clicked()
 {
-    m_tagFront = QColorDialog::getColor(m_tagFront, this, trUtf8("Choose a text color"));
+    QColor newFrontColor = QColorDialog::getColor(m_tagFront, this, trUtf8("Choose a text color"));
+    if (newFrontColor.isValid())
+        m_tagFront = newFrontColor;
 }
 
 void EditTagDialog::on_backgroundColorPB_clicked()
 {
-    QColor init(qRgba(0, 0, 0, 0));
-    if (m_tagBackground.isValid())
-        init = m_tagBackground;
-    m_tagBackground = QColorDialog::getColor(m_tagBackground, this, trUtf8("Choose a background color"), QColorDialog::ShowAlphaChannel);
+    QColor newBackgroundColor = QColorDialog::getColor(m_tagBackground, this, trUtf8("Choose a background color"), QColorDialog::ShowAlphaChannel);
+    if (newBackgroundColor.isValid())
+        m_tagBackground = newBackgroundColor;
 }
 
